@@ -1,0 +1,22 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.node-input-src {
+  box-shadow: inset 0px 0px 5px green;
+}
+
+.node-input-dest {
+  box-shadow: inset 0px 0px 5px red;
+}
+
+.node-input {
+  width: 8rem;
+}
+
+.node-options a:nth-child(2n) {
+  background: #eeebeb;
+}

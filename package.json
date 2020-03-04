@@ -1,0 +1,36 @@
+{
+  "name": "dfs_visualization",
+  "version": "1.0.0",
+  "description": "An app that helps understand dfs traversal of graph in a better way",
+  "main": "app.js",
+  "scripts": {
+    "test": "none",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "none"
+  },
+  "keywords": [
+    "dfs",
+    "traversal",
+    "dfs",
+    "dfs",
+    "visualization",
+    "depth",
+    "first",
+    "search",
+    "in",
+    "graph",
+    "depth",
+    "first",
+    "search"
+  ],
+  "author": "Sudhanshu Bhogal",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "ejs": "^3.0.1",
+    "express": "^4.17.1"
+  }
+}
