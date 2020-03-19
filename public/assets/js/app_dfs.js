@@ -63,9 +63,13 @@ let distY;
 let exponent = 1;
 let newX;
 let newY;
-let step = 0.05;
+let step = 0.01;
 let pct = 0;
 
+//for changing the color of the finalpath
+let redAmt = 0;
+let greenAmt = 200;
+let colorSteps;
 
 // Generating src and destination options in the dropdown
 var srcNodeOptionsDiv = document.getElementById("src-node-options");
@@ -136,7 +140,7 @@ function draw() {
         visuallyTraverse(dfsPath, color(255), 25, true);
     }
     else {
-        visuallyTraverse(finalPath, color("#62d2a2"), 30, false);
+        visuallyTraverse(finalPath, color(redAmt,greenAmt,175,20), 30, false);
     }
 }
 
@@ -151,7 +155,7 @@ function visuallyTraverse(path, ballColor, ballSize, showTrails) {
         distY = endY - beginY;
 
         if (pathFound && path[nodeIndex] !== destNodeId) {
-            Graph.nodeList[path[nodeIndex]].colorr = color(getRandom(30, 120), getRandom(100, 255), getRandom(50, 130)); //color the nodes in the final path
+            Graph.nodeList[path[nodeIndex]].colorr = color(redAmt, greenAmt, 175); //color the nodes in the final path
         }
         if (showTrails) {
             fill(0, 3);
@@ -159,13 +163,20 @@ function visuallyTraverse(path, ballColor, ballSize, showTrails) {
         }
         pct += step;
         if (pct <= 1.0) { //if in between two nodes
-            newX = beginX + pct * distX;
-            newY = beginY + pow(pct, exponent) * distY;
-            noStroke();
-            fill(ballColor);
-            ellipse(newX, newY, ballSize, ballSize);
+            for(let p=0;p<5;p++){ //this loop helps smoothens the movement of the ball
+                newX = beginX + pct * distX;
+                newY = beginY + pow(pct, exponent) * distY;
+                noStroke();
+                fill(ballColor);
+                ellipse(newX, newY, ballSize, ballSize);
+                pct+=step;
+            }
         } else { //else check if more nodes are available to traverse then reset pct to 0 and increment nodeIndex to go to next node
             if (nodeIndex < path.length - 1) {
+                if(pathFound){
+                    redAmt+=colorSteps;
+                    greenAmt-=colorSteps;
+                }
                 nodeIndex++;
                 pct = 0.0;
             } else {
@@ -198,6 +209,9 @@ async function runDFS() {
     // debugger;
     finalPath = await Graph.dfs(startNodeId, destNodeId, dfsPath);
     pathFound = true;
+    print("Finalpaht length::"+finalPath.length);
+    colorSteps = 255/(finalPath.length-2);
+    print("ColorSteps: "+colorSteps);
     print("DFS Path := " + dfsPath);
     print("Final Path in setup()" + finalPath);
     nodeIndex = 1;
@@ -207,12 +221,17 @@ async function runDFS() {
 function resetGraph() {
     clear();
     background(0, 15, 30);
+    //resetting variables
     dfsPath = [];
     finalPath = [];
     pathFound = false;
     pct = 0.0;
+    redAmt=0;
+    greenAmt=255;
+    colorSteps = 0;
     nodeIndex = 1;
-    for (let node of Graph.nodeList) {  //resets colors of all nodes
+    //resets colors of all nodes
+    for (let node of Graph.nodeList) {  
         if (node.id == startNodeId) {
             Graph.nodeList[startNodeId].colorr = color(20, 200, 20);
         } else if (node.id == destNodeId) {
@@ -230,9 +249,9 @@ function displayLabels() {
     //for source
     stroke(255);
     strokeWeight(5);
-    line(1220, 30, 1220, 270);
-    fill(20, 200, 20);
+    line(1210, 30, 1210, 270);
     noStroke();
+    fill(20, 200, 20);
     ellipse(1250, 50, 40, 40);
     textSize(24);
     textAlign(LEFT, CENTER);
@@ -258,7 +277,7 @@ function displayLabels() {
     text("Discovered", 1275, 200);
 
     //for done
-    fill(150, 23, 97);
+    fill(132,108,91);
     ellipse(1250, 250, 40, 40)
     fill(255);
     text("Done", 1275, 250);
@@ -267,120 +286,3 @@ function displayLabels() {
 function getRandom(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
-
-//The following code helps to make a random graph with random vertices and random edges between them.
-// for (let i = 0; i < 10; i++) {
-//     nodeList[i] = new Node(getRandom(100, width - 100), getRandom(100, height - 100), 50, 50);
-//     nodeList[i].show();
-// }
-// for (let i = 0; i < 10; i++) {
-//     for (let j = 0; j < getRandom(2, 5); j++) {
-//         let randomNeighbour = getRandom(0, 9);
-//         if (randomNeighbour != i && !nodeList[i].neighbours.includes(nodeList[randomNeighbour])) {
-//             nodeList[i].addNeighbour(nodeList[randomNeighbour]);
-//             nodeList[i].addNeighbour(nodeList[i]);
-//         }
-//     }
-// }
-// for (node of nodeList) {
-//     node.plotEdgesWithNeighbours();
-// }
-// for (node of nodeList) {
-//     node.show();
-// }
-
-
-
-
-//Utility method that adds new node at a random location on pressing LEFT_ARROW and prints the location of all the node currently on the canvas on pressing RIGHT_ARROW
-// function keyPressed() {
-//     if (keyCode === LEFT_ARROW) {
-//         newNode = new Node(getRandom(100, width - 100), getRandom(100, height - 100), 50, 50);
-//         nodeList.push(newNode);
-//     } if (keyCode === RIGHT_ARROW) {
-//         for (let i = 0; i < nodeList.length; i++) {
-//             print("Node " + i + " => x: " + nodeList[i].x + "   y: " + nodeList[i].y);
-//         }
-//     }
-// }
-
-
-//The following helps to change the location of newly added node on the canvas by dragging it with the mouse
-    // if (mouseIsPressed) {
-    //     for (node of nodeList) {
-    //         if (dist(node.x, node.y, mouseX, mouseY) < 25) {
-    //             node.x = mouseX;
-    //             node.y = mouseY;
-    //         }
-    //     }
-    // }
-
-//Cords of nodes for 1280 * 720 canvas
-// Node 0 => x: 174   y: 54
-// Node 1 => x: 142   y: 146
-// Node 2 => x: 111   y: 243
-// Node 3 => x: 120   y: 386
-// Node 4 => x: 255   y: 447
-// Node 5 => x: 248   y: 551
-// Node 6 => x: 240   y: 657
-// Node 7 => x: 402   y: 654
-// Node 8 => x: 403   y: 336
-// Node 9 => x: 408   y: 199
-// Node 10 => x: 657   y: 240
-// Node 11 => x: 616   y: 441
-// Node 12 => x: 809   y: 512
-// Node 13 => x: 636   y: 634
-// Node 14 => x: 1004   y: 383
-// Node 15 => x: 1091   y: 201
-// Node 16 => x: 1016   y: 75
-// Node 17 => x: 865   y: 66
-// Node 18 => x: 1134   y: 522
-// Node 19 => x: 1184   y: 651
-
-
-
-
-
-// let beginX = 20.0; // Initial x-coordinate
-// let beginY = 10.0; // Initial y-coordinate
-// let endX = 570.0; // Final x-coordinate
-// let endY = 320.0; // Final y-coordinate
-// let distX; // X-axis distance to move
-// let distY; // Y-axis distance to move
-// let exponent =  1; // Determines the curve
-// let x = 0.0; // Current x-coordinate
-// let y = 0.0; // Current y-coordinate
-// let step = 0.01; // Size of each step along the path
-// let pct = 0; // Percentage traveled (0.0 to 1.0)
-
-// function setup() {
-//   createCanvas(720, 400);
-//   noStroke();
-//   background(0);
-//   distX = endX - beginX;
-//   distY = endY - beginY;
-// }
-
-// function draw() {
-//   fill(0, 3);
-//   rect(0, 0, width, height);
-//   // background(0);
-//   pct += step;
-//   if (pct < 1.0) {
-//     x = beginX + pct * distX;
-//     y = beginY + pow(pct, exponent) * distY;
-//   }
-//   fill(255);
-//   ellipse(x, y, 20, 20);
-// }
-
-// function mousePressed() {
-//   pct = 0.0;
-//   beginX = x;
-//   beginY = y;
-//   endX = mouseX;
-//   endY = mouseY;
-//   distX = endX - beginX;
-//   distY = endY - beginY;
-// }

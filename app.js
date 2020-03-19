@@ -11,5 +11,5 @@ app.get("/", (req, res) => {
 
 
 app.listen(process.env.PORT, process.env.IP, () => {
-    console.log("Server started!!");
+    console.log("Server started at localhost:"+process.env.PORT);
 });

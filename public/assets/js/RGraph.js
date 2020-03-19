@@ -7,6 +7,7 @@ class RGraph {
     }
 
 
+
     async dfs(startId, endId, dfsPath) {
         // console.log("Start id:" + startId + "   Dest node:" + endId + "  Dfs path:" + dfsPath);
         let tempnode;
@@ -41,14 +42,14 @@ class RGraph {
         // print(dfsPath);
         dfsPath.push(node.id);
         visited[node.id] = true;
-        await this.sleep(800); //wait for some time for animation to complete
-
+        await this.sleep(500); //wait for some time for animation to complete
+        
         //if destination node is found, return
         if (node.id === endId) {
             this.isDestfound = true;
             return;
         }
-
+        
         //Traverse and push the neighbours of the current node onto the stack in recursion
         for (let n of node.neighbours) {
             if (!visited[n.id]) {
@@ -57,7 +58,7 @@ class RGraph {
                 }
                 await this.dfsUtil(n, visited, startId, endId, dfsPath);
             }
-
+            
             await this.sleep(200); // wait for animation to complete
 
             //if destination is found, stop traversing any further neighbours and start emptying the stack
@@ -80,7 +81,7 @@ class RGraph {
 
         await this.sleep(200);
         if (node.id != startId) {
-            node.colorr = color(150, 23, 97); //While going back to start after finding the destination, If current node is not start node, color it as discovered node
+            node.colorr = color(132,108,91); //While going back to start after finding the destination, If current node is not start node, color it as discovered node
         }
     }
 
